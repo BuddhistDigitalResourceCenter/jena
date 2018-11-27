@@ -131,6 +131,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "    text:map (",
                     "         [ text:field \"label\" ; text:predicate rdfs:label ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
+                    "         [ text:field \"chunk\" ; text:predicate :chunk ; text:noIndex true ]",
                     "         ) ."
                     );
     }
