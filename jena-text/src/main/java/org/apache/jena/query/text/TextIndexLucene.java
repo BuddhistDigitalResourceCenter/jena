@@ -638,32 +638,25 @@ public class TextIndexLucene implements TextIndex {
         } else {
             if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
                 textField += "_" + lang;
-            }
-            
-            if (docDef.getField(property) != null) {
+                textClause = textField + ":" + qs;
+            } else if (docDef.getField(property) != null) {
                 textClause = textField + ":" + qs;
             } else {
                 textClause = qs;
             }
-           
-            String langClause = null;
-            if (langField != null) {
-                langClause = StringUtils.isNotEmpty(lang) ? (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*") : null;
+            
+            if (langField != null && StringUtils.isNotEmpty(lang)) {
+                textClause = "(" + textClause + ") AND " + (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*");
             }
-            if (langClause != null)
-                textClause = "(" + textClause + ") AND " + langClause ;
         }
         
-        String graphClause = null;
-        if (graphURI != null) {
-            String escaped = QueryParserBase.escape(graphURI) ;
-            graphClause = getDocDef().getGraphField() + ":" + escaped ;
-        }
         
         String queryString = textClause ;
 
-        if (graphClause != null)
-            queryString = "(" + queryString + ") AND " + graphClause ;
+        if (graphURI != null) {
+            String escaped = QueryParserBase.escape(graphURI) ;
+            queryString = "(" + queryString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
+        }
         
         Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
         Query query = parseQuery(queryString, qa) ;
