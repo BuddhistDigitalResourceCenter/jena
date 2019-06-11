@@ -49,6 +49,9 @@ public class Util {
     // map of auxiliary index info
     private static Hashtable<String, List<String>> auxIndexes = new Hashtable<>();
     
+    // map of property resource to list of properties
+    private static Hashtable<Resource, List<Resource>> propsLists = new Hashtable<>();
+    
     // cache of effective fields
     private static Hashtable<String, Hashtable<String,String>> effectiveFields = new Hashtable<>();
 
@@ -99,6 +102,14 @@ public class Util {
     
     public static boolean usingIndexAnalyzers() {
         return !indexAnalyzers.isEmpty();
+    }
+    
+    public static void addPropsList(Resource prop, List<Resource> list) {
+        propsLists.put(prop, list);
+    }
+    
+    public static List<Resource> getPropsList(Resource prop) {
+        return propsLists.get(prop);
     }
     
     public static List<String> getSearchForTags(String tag) {

@@ -55,6 +55,8 @@ import org.apache.jena.sparql.util.Symbol ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import static org.apache.jena.query.text.assembler.TextVocab.*;
+
 /** property function that accesses a text index */
 public class TextQueryPF extends PropertyFunctionBase {
     private static Logger log = LoggerFactory.getLogger(TextQueryPF.class) ;
@@ -89,7 +91,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
 
-            if (list.size() > 5)
+            if (list.size() > 5 && ! list.get(0).toString().equals(pProps))
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
         }
     }
