@@ -688,7 +688,9 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
+    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) 
+            throws ParseException, IOException, InvalidTokenOffsetsException 
+    {
         String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
         String textField = litField;
         String textClause = "";               
@@ -744,7 +746,9 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
+    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) 
+            throws ParseException, IOException, InvalidTokenOffsetsException 
+    {
         String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
         String textField = litField;
         String textClause = "";               
