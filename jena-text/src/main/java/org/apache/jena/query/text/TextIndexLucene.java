@@ -36,6 +36,7 @@ import org.apache.jena.query.text.analyzer.IndexingMultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.QueryMultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.TokenStream;
@@ -471,7 +472,7 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit) {
-        return query(property, qs, graphURI, lang, MAX_N, null) ;
+        return query(property, qs, graphURI, lang, limit, null) ;
     }
 
     @Override
@@ -491,6 +492,32 @@ public class TextIndexLucene implements TextIndex {
     public List<TextHit> query(String subjectUri, Node property, String qs, String graphURI, String lang, int limit, String highlight) {
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, property, qs, addUriPredicate(subjectUri), graphURI, lang, limit, highlight) ;
+        }
+        catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage()) ;
+        }
+        catch (Exception ex) {
+            throw new TextIndexException("query", ex) ;
+        }
+    }
+
+    @Override
+    public List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            return query$(indexReader, props, qs, UnaryOperator.identity(), graphURI, lang, limit, highlight) ;
+        }
+        catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage()) ;
+        }
+        catch (Exception ex) {
+            throw new TextIndexException("query", ex) ;
+        }
+    }
+
+    @Override
+    public List<TextHit> query(String subjectUri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            return query$(indexReader, props, qs, addUriPredicate(subjectUri), graphURI, lang, limit, highlight) ;
         }
         catch (ParseException ex) {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
@@ -662,6 +689,62 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private List<TextHit> query$(IndexReader indexReader, Node property, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
+        String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
+        String textField = litField;
+        String textClause = "";               
+        String langField = getDocDef().getLangField();
+        
+        List<String> searchForTags = Util.getSearchForTags(lang);
+        boolean usingSearchFor = !searchForTags.isEmpty();
+        if (usingSearchFor) {            
+            for (String tag : searchForTags) {
+                String tf = textField + "_" + tag;
+                textClause += tf + ":" + qs + " ";
+            }
+        } else {
+            if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
+                textField += "_" + lang;
+                textClause = textField + ":" + qs;
+            } else if (docDef.getField(property) != null) {
+                textClause = textField + ":" + qs;
+            } else {
+                textClause = qs;
+            }
+            
+            if (langField != null && StringUtils.isNotEmpty(lang)) {
+                textClause = "(" + textClause + ") AND " + (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*");
+            }
+        }
+        
+        
+        String queryString = textClause ;
+
+        if (graphURI != null) {
+            String escaped = QueryParserBase.escape(graphURI) ;
+            queryString = "(" + queryString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
+        }
+        
+        Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
+        Query textQuery = parseQuery(queryString, qa);
+        Query query = textQueryExtender.apply(textQuery);
+
+        if ( limit <= 0 )
+            limit = MAX_N ;
+
+        log.debug("Lucene queryString: {}, parsed query: {}, limit:{}", queryString, query, limit) ;
+
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
+
+        ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
+        
+        if (highlight != null) {
+            return highlightResults(sDocs, indexSearcher, query, litField, highlight, usingSearchFor, lang);
+        } else {
+            return simpleResults(sDocs, indexSearcher, query, litField);
+        }
+    }
+
+    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
         String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
         String textField = litField;
         String textClause = "";               
