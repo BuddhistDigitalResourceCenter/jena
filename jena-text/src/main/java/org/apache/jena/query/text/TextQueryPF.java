@@ -590,13 +590,11 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.warn("lang argument is ignored if langField not set in the index configuration");
 
         String highlight = extractArg("highlight", list);
-
-        if (predicate != null) {
-            return new StrMatch(predicate, queryString, lang, limit, score, highlight) ;
-        } else if (props != null) {
+        
+        if (props != null) {
             return new StrMatch(props, queryString, lang, limit, score, highlight) ;
         } else {
-            return null ;
+            return new StrMatch(predicate, queryString, lang, limit, score, highlight) ;
         }
     }
 
