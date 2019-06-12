@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -112,15 +113,25 @@ public class Util {
         return propsLists.get(prop);
     }
     
-    public static List<String> getSearchForTags(String tag) {
-        List<String> tags = new ArrayList<>();
-        if (StringUtils.isNotEmpty(tag)) {
-            List<String> x = searchForTags.get(tag);
-            if (x != null) {
-                tags = x;
-            }
+    public static boolean usingSearchFor(String lang) {
+        return StringUtils.isNotBlank(lang) ? searchForTags.containsKey(lang) : false;
+    }
+    
+    /**
+     * If there are a list of tags to search for given the supplied lang tag, then the list is returned;
+     * otherwise, a list of just the supplied lang tag
+     * 
+     * @param lang
+     * @return possibly empty list of tags to search for
+     */
+    public static List<String> getSearchForTags(String lang) {
+        if (usingSearchFor(lang)) {
+            return searchForTags.get(lang);
+        } else if (StringUtils.isNotBlank(lang)) {
+            return Arrays.asList(lang);
+        } else {
+            return new ArrayList<>();
         }
-        return tags;
     }
     
     public static void addSearchForTags(String tag, List<String> tags) {

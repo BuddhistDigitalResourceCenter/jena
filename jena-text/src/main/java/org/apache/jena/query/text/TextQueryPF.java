@@ -176,6 +176,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         Node score = null;
         Node literal = null;
         Node graph = null;
+        Node prop = null;
 
         if (argSubject.isList()) {
             // Length checked in build()
@@ -198,6 +199,12 @@ public class TextQueryPF extends PropertyFunctionBase {
                 if (!graph.isVariable())
                     throw new QueryExecException("Hit graph is not a variable: "+argSubject) ;
             }
+
+            if (argSubject.getArgListSize() > 4) {
+                prop = argSubject.getArg(4);
+                if (!prop.isVariable())
+                    throw new QueryExecException("Hit prop is not a variable: "+argSubject) ;
+            }
         } else {
             s = argSubject.getArg() ;
         }
@@ -215,19 +222,20 @@ public class TextQueryPF extends PropertyFunctionBase {
         // ----
 
         QueryIterator qIter = (Var.isVar(s)) 
-            ? variableSubject(binding, s, score, literal, graph, match, execCxt)
-            : concreteSubject(binding, s, score, literal, graph, match, execCxt) ;
+            ? variableSubject(binding, s, score, literal, graph, prop, match, execCxt)
+            : concreteSubject(binding, s, score, literal, graph, prop, match, execCxt) ;
         if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Node graph, Collection<TextHit> results, ExecutionContext execCxt) {
+    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, Collection<TextHit> results, ExecutionContext execCxt) {
         log.trace("resultsToQueryIterator: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
         Var graphVar = (graph==null) ? null : Var.alloc(graph) ;
+        Var propVar = (prop==null) ? null : Var.alloc(prop) ;
 
         Function<TextHit,Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null)
@@ -241,6 +249,8 @@ public class TextQueryPF extends PropertyFunctionBase {
                 bmap.add(literalVar, hit.getLiteral());
             if (graphVar != null && hit.getGraph() != null)
                 bmap.add(graphVar, hit.getGraph());
+            if (propVar != null && hit.getProp() != null)
+                bmap.add(propVar, hit.getProp());
             return bmap;
         } ;
         
@@ -249,15 +259,15 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
+    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
         log.trace("variableSubject: {}", match) ;
 //        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), match.getHighlight(), execCxt) ;
         ListMultimap<String,TextHit> results = query(match, execCxt) ;
         Collection<TextHit> r = results.values();
-        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
+        return resultsToQueryIterator(binding, s, score, literal, graph, prop, r, execCxt);
     }
 
-    private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
+    private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
         log.trace("concreteSubject: {}", match) ;
         ListMultimap<String,TextHit> x;
 
@@ -275,7 +285,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         List<TextHit> r = x.get(TextQueryFuncs.subjectToString(s));
 
-        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
+        return resultsToQueryIterator(binding, s, score, literal, graph, prop, r, execCxt);
     }
 
     private ListMultimap<String,TextHit> query(StrMatch match, ExecutionContext execCxt) {
@@ -473,10 +483,11 @@ public class TextQueryPF extends PropertyFunctionBase {
      */
     private StrMatch objectToStruct(PropFuncArg argObject, boolean executionTime) {
         if (argObject.isNode()) {
+            // should be a single query string that will be searched on the text:defaultField
             Node o = argObject.getArg() ;
             if (!o.isLiteral()) {
                 if ( executionTime )
-                    log.warn("Object to text query is not a literal") ;
+                    log.warn("Object to text:query is not a literal " + argObject) ;
                 return null ;
             }
 
@@ -495,8 +506,9 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
 
         List<Node> list = argObject.getArgList() ;
-        if (list.size() == 0 || list.size() > 5)
-            throw new TextIndexException("Change in object list size") ;
+//        if (list.size() == 0 || list.size() > 5)
+        if (list.size() == 0)
+            throw new TextIndexException("text:query object list can not be empty") ;
 
         Node predicate = null ;
         List<Resource> props = null ;
@@ -506,10 +518,10 @@ public class TextQueryPF extends PropertyFunctionBase {
         if (x.isURI()) {
             Property prop = ResourceFactory.createProperty(x.getURI());
             idx++ ;
+            if (idx >= list.size())
+                throw new TextIndexException("Property specified but no query string : " + list) ;
             if (! prop.equals(pProps)) {
                 predicate = x ;
-                if (idx >= list.size())
-                    throw new TextIndexException("Property specified but no query string : " + list) ;
                 x = list.get(idx) ;
                 if (! isIndexed(predicate)) {
                     return null ;
