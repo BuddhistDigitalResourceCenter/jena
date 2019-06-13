@@ -532,7 +532,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                 while (idx < list.size() && list.get(idx).isURI()) {
                     x = list.get(idx) ;
                     prop = ResourceFactory.createProperty(x.getURI()) ;
-                    List<Resource> pList = Util.getPropsList(prop) ;
+                    List<Resource> pList = Util.getPropList(prop) ;
                     if (pList != null) {
                         props.addAll(pList) ;
                     } else {

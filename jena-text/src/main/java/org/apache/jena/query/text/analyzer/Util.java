@@ -109,8 +109,13 @@ public class Util {
         propsLists.put(prop, list);
     }
     
-    public static List<Resource> getPropsList(Resource prop) {
+    public static List<Resource> getPropList(Resource prop) {
         return propsLists.get(prop);
+    }
+    
+    // for testing
+    public static int sizePropsList() {
+        return propsLists.size();
     }
     
     public static boolean usingSearchFor(String lang) {
