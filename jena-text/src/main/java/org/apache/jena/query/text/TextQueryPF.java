@@ -85,7 +85,7 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
-            if (size == 0 || size > 4) {
+            if (size == 0 || size > 5) {
                 throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, must be at least 1 and not greater than 4: "+argSubject);
             }
         }
@@ -230,7 +230,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, Collection<TextHit> results, ExecutionContext execCxt) {
-        log.trace("resultsToQueryIterator: {}", results) ;
+        log.trace("resultsToQueryIterator CALLED with results: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
@@ -251,6 +251,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                 bmap.add(graphVar, hit.getGraph());
             if (propVar != null && hit.getProp() != null)
                 bmap.add(propVar, hit.getProp());
+            log.trace("resultsToQueryIterator RETURNING bmap: {}", bmap) ;
             return bmap;
         } ;
         
@@ -260,7 +261,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
-        log.trace("variableSubject: {}", match) ;
+        log.trace("variableSubject with params: {}", match) ;
 //        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), match.getHighlight(), execCxt) ;
         ListMultimap<String,TextHit> results = query(match, execCxt) ;
         Collection<TextHit> r = results.values();
@@ -268,7 +269,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
-        log.trace("concreteSubject: {}", match) ;
+        log.trace("concreteSubject with params: {}", match) ;
         ListMultimap<String,TextHit> x;
 
         match.setQueryLimit(-1);
@@ -520,19 +521,24 @@ public class TextQueryPF extends PropertyFunctionBase {
             idx++ ;
             if (idx >= list.size())
                 throw new TextIndexException("Property specified but no query string : " + list) ;
+            log.trace("objectToStruct: x.isURI(), prop: " + prop + " at idx: " + (idx-1));
             if (! prop.equals(pProps)) {
+                log.trace("objectToStruct: prop is not equals: " + pProps);
                 predicate = x ;
                 x = list.get(idx) ;
                 if (! isIndexed(predicate)) {
+                    log.warn("objectToStruct: prop is not indexed " + prop) ;
                     return null ;
                 }
             } else {
-                // process text:props list of predicates
+                // process text:props list of properties
+                log.trace("objectToStruct: processing text:props list of properties starting at " + idx);
                 props = new ArrayList<>() ;
                 while (idx < list.size() && list.get(idx).isURI()) {
                     x = list.get(idx) ;
                     prop = ResourceFactory.createProperty(x.getURI()) ;
                     List<Resource> pList = Util.getPropList(prop) ;
+                    log.trace("objectToStruct: PROPERTY at " + idx + " IS " + prop + " WITH pList: " + pList);
                     if (pList != null) {
                         props.addAll(pList) ;
                     } else {
@@ -543,15 +549,17 @@ public class TextQueryPF extends PropertyFunctionBase {
                 if (idx >= list.size())
                     throw new TextIndexException("List of properties specified but no query string : " + list) ;
                 if (! isIndexed(props)) {
+                    log.warn("objectToStruct: props are not indexed " + props) ;
                     return null ;
                 }
+                x = list.get(idx) ;
             }
         }
 
         // String!
         if (!x.isLiteral()) {
             if ( executionTime )
-                log.warn("Text query string is not a literal " + list) ;
+                log.warn("Text query string is not a literal " + list + " AT idx: " + idx) ;
             return null ;
         }
         String lang = x.getLiteralLanguage();
@@ -674,7 +682,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         @Override
         public String toString() {
-            return "( property: " + property + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; maxFrags: " + highlight + " )";
+            return "( property: " + property + "; props: " + props + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; highlight: " + highlight + " )";
         }
     }
 }

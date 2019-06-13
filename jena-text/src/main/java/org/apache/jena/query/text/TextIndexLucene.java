@@ -429,8 +429,9 @@ public class TextIndexLucene implements TextIndex {
                 log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser");
         }
 
-        if (qp == null) 
+        if (qp == null) {
             qp = new QueryParser(docDef.getPrimaryField(), analyzer);
+        }
         qp.setAllowLeadingWildcard(true);
         query = qp.parse(queryString);
         return query ;
@@ -834,7 +835,7 @@ public class TextIndexLucene implements TextIndex {
         if ( limit <= 0 )
             limit = MAX_N ;
 
-        log.debug("Lucene queryString: {}, parsed query: {}, limit:{}", queryString, query, limit) ;
+        log.debug("query$ with SINGLE: {}; INPUT queryString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", property, queryString, queryParserType, qa, textQuery, query, limit) ;
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
 
@@ -869,6 +870,7 @@ public class TextIndexLucene implements TextIndex {
             // we add the text:defaultField
             textFields.add(docDef.getPrimaryField());
             qString = qs;
+            log.trace("query$ processed EMPTY LIST of properties: {}; Lucene queryString: {}; textFields: {}", props, qString, textFields) ;
         } else {
             // otherwise there are one or more properties to search over
             // possibly with searchFor list for each property
@@ -882,7 +884,7 @@ public class TextIndexLucene implements TextIndex {
                 textFields.add(textField);
 
                 if (searchForTags.isEmpty()) {
-                    qString = textField + ":" + qs + " ";
+                    qString += textField + ":" + qs + " ";
                 } else {
                     for (String tag : searchForTags) {
                         if (usingLang) {
@@ -890,7 +892,7 @@ public class TextIndexLucene implements TextIndex {
                             qString += tf + ":" + qs + " ";
 //                        } else if (docDef.getField(prop.asNode()) != null) {
                         } else {
-                            qString = textField + ":" + qs + " ";
+                            qString += textField + ":" + qs + " ";
                         }
 //                        } else {
 //                            log.warn("The text:query config seems wrong. A property has been found that does not have a textField mapping: " + prop);
@@ -898,11 +900,14 @@ public class TextIndexLucene implements TextIndex {
                     }
                 }
             }
+
+            log.trace("query$ PROCESSING LIST of properties: {}; Lucene queryString: {}; textFields: {} ", props, qString, textFields) ;
         }
 
         // add a clause for the lang if not usingSearchFor and there is a defined langFIeld in the config
         if (!usingSearchFor && langField != null && StringUtils.isNotBlank(lang)) {
             qString = "(" + qString + ") AND " + (!lang.equals("none") ? langField+":"+lang : "-"+langField+":*");
+            log.trace("query$ ADDING LANG qString: {} ", qString) ;
         }
 
 //        if (usingSearchFor) {            
@@ -939,7 +944,7 @@ public class TextIndexLucene implements TextIndex {
         if ( limit <= 0 )
             limit = MAX_N ;
 
-        log.debug("Lucene queryString: {}, parsed query: {}, limit:{}", qString, query, limit) ;
+        log.debug("query$ with LIST: {}; INPUT qString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", props, qString, queryParserType, qa, textQuery, query, limit) ;
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
 

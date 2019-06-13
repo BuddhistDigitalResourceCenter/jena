@@ -75,6 +75,6 @@ public class TextHit
     
     @Override
     public String toString() {
-        return "TextHit[node="+node+" literal="+literal+" score="+score+" graph="+graph+"]";
+        return "TextHit{node="+node+" literal="+literal+" score="+score+" graph="+graph+" prop="+prop+"}";
     }
 }

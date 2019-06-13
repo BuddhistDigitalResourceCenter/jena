@@ -32,7 +32,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
-import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 
@@ -42,9 +41,6 @@ public class TestPropListsAssembler {
     private static final Resource spec1;
     private static final Resource spec2;
     private static final Resource spec3;
-//    private static final Resource spec4;
-//    private static final Resource spec5;
-//    private static final Resource spec6;
     
     @Test 
     public void PropsListsNull() {
