@@ -66,6 +66,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestPropListsAssembler.class
     , TestTextPropLists.class
     , TestTextPropLists02.class
+    , TestTextMultilingualEnhancements02.class
 })
 
 public class TS_Text
