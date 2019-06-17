@@ -101,7 +101,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                     "    text:directory   \"mem\" ;",
                     "    text:storeValues true ;",
                     "    text:entityMap   spec:entMap ;",
-                    "    text:multilingualSupport true ;", 
+                    "#    text:multilingualSupport true ;", 
                     "    text:propLists (",
                     "      [ text:propListProp spec:labels ;",
                     "        text:props ( skos:prefLabel ",
@@ -124,9 +124,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                     "    text:langField        \"lang\" ;",
                     "    text:graphField       \"graph\" ;",
                     "    text:map (",
-                    "         [ text:field \"label\" ; text:predicate rdfs:label ;",
-                    "           text:analyzer [ a text:StandardAnalyzer ; text:stopWords ( 'foo'  'bar' ) ]",
-                    "         ]",
+                    "         [ text:field \"label\" ; text:predicate rdfs:label ]",
                     "         [ text:field \"altLabel\" ; text:predicate skos:altLabel ]",
                     "         [ text:field \"prefLabel\" ; text:predicate skos:prefLabel ]",
                     "         [ text:field \"comment\" ; text:predicate rdfs:comment ]",
@@ -164,29 +162,28 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
     }
     
     @Test
-    public void testForSanity() {
+    public void testForSanity01() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
                 "."
                 );
-        // the standard analyzer not to have 'the' as a stop word
         String qyString = StrUtils.strjoinNL(
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    ?s text:query ( rdfs:label 'the' 10 ) .",
+                "    ?s text:query 'bar' .",
                 "}"
                 );
-        System.err.println("\n\ntestWithStopWords TURTLE: \n" + turtle);
-        System.err.println("testWithStopWords QUERY: \n" + qyString);
+        System.err.println("\n\ntestForSanity01 TURTLE: \n" + turtle);
+        System.err.println("testForSanity01 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
     
     @Test
-    public void testSingleTextProp() {
+    public void testForSanity02() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
@@ -197,18 +194,18 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props rdfs:label 'the' 10 ) .",
+                "    ?s text:query ( rdfs:label 'bar' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestSingleTextProp TURTLE: \n" + turtle);
-        System.err.println("testSingleTextProp QUERY: \n" + qyString);
+        System.err.println("\n\ntestForSanity02 TURTLE: \n" + turtle);
+        System.err.println("testForSanity02 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList(RDFS.getURI()+"label")) ;
+        expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
     
     @Test
-    public void testListTextProp() {
+    public void testForSanity03() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "res:oneThing skos:prefLabel 'bar the barfoo foo'",
@@ -219,13 +216,83 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'the' 10 ) .",
+                "    ?s text:query ( skos:prefLabel 'bar' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestListTextProp TURTLE: \n" + turtle);
-        System.err.println("testListTextProp QUERY: \n" + qyString);
+        System.err.println("\n\ntestForSanity03 TURTLE: \n" + turtle);
+        System.err.println("testForSanity03 QUERY: \n" + qyString);
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
+        doTestSearch(turtle, qyString, expectedURIs);
+    }
+    
+    @Test
+    public void testSingleTextProp() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "res:oneThing skos:altLabel 'bar is surely the barfoo foo for me and you'",
+                "."
+                );
+        // the standard analyzer not to have 'the' as a stop word
+        String qyString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props skos:altLabel 'surely' 10 ) .",
+                "}"
+                );
+        System.err.println("\n\ntestSingleTextProp TURTLE: \n" + turtle);
+        System.err.println("testSingleTextProp QUERY: \n" + qyString);
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"altLabel")) ;
+        doTestSearch(turtle, qyString, expectedURIs);
+    }
+    
+    @Test
+    public void testListTextProp01() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "res:oneThing skos:prefLabel \"bar the barfoo foo is hidden\"",
+                "."
+                );
+        String qyString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "}"
+                );
+        System.err.println("\n\ntestListTextProp01 TURTLE: \n" + turtle);
+        System.err.println("testListTextProp01 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel")) ;
+        doTestSearch(turtle, qyString, expectedURIs);
+    }
+    
+    @Test
+    public void testListTextProp02() {
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "",
+                "res:oneThing skos:prefLabel \"bar the barfoo foo is hidden\" ",
+                ".",
+                "res:twoThing skos:altLabel \"there is no bar to the hidden foo of the flow\" ",
+                ".",
+                "res:threeThing rdfs:label \"if there had been a f o o then it would not bar a hit\" ",
+                "."
+                );
+        String qyString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "",
+                "SELECT ?s",
+                "WHERE {",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "}"
+                );
+        System.err.println("\n\ntestListTextProp02 TURTLE: \n" + turtle);
+        System.err.println("testListTextProp02 QUERY: \n" + qyString);
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel", SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
 }
