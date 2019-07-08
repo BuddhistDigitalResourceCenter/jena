@@ -420,13 +420,19 @@ public class TextIndexES implements TextIndex {
 
     @Override
     public List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        LOGGER.warn("TextIndexES.query called with liswt of property list which is not yet implemented");
-        return query(null, props, qs, graphURI, lang, limit, highlight);
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
+        return null;
     }
 
     @Override
     public List<TextHit> query(String uri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
-        LOGGER.warn("TextIndexES.query called with liswt of property list which is not yet implemented");
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
+        return null;
+    }
+
+    @Override
+    public List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) {
+        LOGGER.warn("TextIndexES.query called with list of property list which is not yet implemented");
         return null;
     }
 

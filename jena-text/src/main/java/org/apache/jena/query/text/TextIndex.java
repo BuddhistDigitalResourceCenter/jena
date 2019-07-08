@@ -56,6 +56,8 @@ public interface TextIndex extends Closeable //, Transactional
     List<TextHit> query(List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight) ;
     
     List<TextHit> query(String subjectUri, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight);
+    
+    List<TextHit> query(Node subj, List<Resource> props, String qs, String graphURI, String lang, int limit, String highlight);
 
     default List<TextHit> query(String subjectUri, Node property, String qs, String graphURI, String lang, int limit, String highlight){
         return query(property, qs, graphURI, lang, limit, highlight);
