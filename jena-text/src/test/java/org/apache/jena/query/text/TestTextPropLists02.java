@@ -242,7 +242,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props rdfs:label 'surely' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( rdfs:label 'surely' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntest02SingleTextProp01 TURTLE: \n" + turtle);
@@ -264,7 +264,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props skos:altLabel 'surely' 10 'highlight:' ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 'highlight:' ) .",
                 "}"
                 );
         System.err.println("\n\ntest02SingleTextProp02 TURTLE: \n" + turtle);
@@ -285,7 +285,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntest02ListTextProp01 TURTLE: \n" + turtle);
@@ -312,7 +312,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 "",
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntest02ListTextProp02 TURTLE: \n" + turtle);
@@ -339,7 +339,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 "",
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 'highlight:' ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 'highlight:' ) .",
                 "}"
                 );
         System.err.println("\n\ntest02ListTextProp03 TURTLE: \n" + turtle);
@@ -366,7 +366,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                 "",
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'bar' 10 'highlight:' ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'bar' 10 'highlight:' ) .",
                 "}"
                 );
         System.err.println("\n\ntest02ListTextProp04 TURTLE: \n" + turtle);

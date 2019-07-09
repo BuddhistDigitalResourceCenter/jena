@@ -238,7 +238,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props skos:altLabel 'surely' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntestSingleTextProp01 TURTLE: \n" + turtle);
@@ -260,7 +260,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props skos:altLabel 'surely' 10 'highlight:' ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 'highlight:' ) .",
                 "}"
                 );
         System.err.println("\n\ntestSingleTextProp02 TURTLE: \n" + turtle);
@@ -281,7 +281,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 QUERY_PROLOG,
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntestListTextProp01 TURTLE: \n" + turtle);
@@ -308,7 +308,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "",
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
         System.err.println("\n\ntestListTextProp02 TURTLE: \n" + turtle);
@@ -335,7 +335,7 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "",
                 "SELECT ?s",
                 "WHERE {",
-                "    (?ss ?sc ?lit ?g ?s) text:query ( text:props spec:labels 'foo' 10 'highlight:' ) .",
+                "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 'highlight:' ) .",
                 "}"
                 );
         System.err.println("\n\ntestListTextProp03 TURTLE: \n" + turtle);

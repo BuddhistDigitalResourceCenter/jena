@@ -241,7 +241,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( text:props spec:labels \"green\"@en-02 ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-02 ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
@@ -272,7 +272,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( text:props spec:labels \"flower\"@en-01 ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( spec:labels \"flower\"@en-01 ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
@@ -301,7 +301,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( text:props spec:labels \"green\"@en-03 ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-03 ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
@@ -330,7 +330,7 @@ public class TestTextMultilingualEnhancements02 extends AbstractTestDatasetWithT
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( text:props spec:labels \"green\"@en-aux ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( spec:labels \"green\"@en-aux ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
