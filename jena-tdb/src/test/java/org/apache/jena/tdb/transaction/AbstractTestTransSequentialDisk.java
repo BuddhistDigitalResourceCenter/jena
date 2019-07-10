@@ -22,7 +22,6 @@ import java.io.File ;
 
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;
 
@@ -37,7 +36,7 @@ public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransS
     
     @Before public void before()
     {
-        TDBInternal.reset() ;
+        StoreConnection.reset() ;
         DIR = ConfigTest.getCleanDir() ;
         File d = new File(DIR) ;
     }

@@ -77,8 +77,6 @@
 [<MAX>]        ::= 'MAX'
 [<SUM>]        ::= 'SUM'
 [<AVG>]        ::= 'AVG'
-[<MEDIAN>]     ::= 'MEDIAN'
-[<MODE>]       ::= 'MODE'
 [<SAMPLE>]     ::= 'SAMPLE'
 [<GROUP_CONCAT>]     ::= 'GROUP_CONCAT'
 

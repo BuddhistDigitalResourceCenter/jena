@@ -20,7 +20,6 @@ package org.apache.jena.tdb.store;
 
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.sys.TestOps ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -40,7 +39,6 @@ public class TestStoreConnectionsMapped extends AbstractStoreConnections
     public static void afterClassFileMode()
     {
         TestOps.setFileMode(mode) ;
-        TDBInternal.reset();
     }
 }
 

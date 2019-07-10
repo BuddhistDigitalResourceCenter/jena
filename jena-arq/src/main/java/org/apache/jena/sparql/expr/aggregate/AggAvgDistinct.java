@@ -26,13 +26,9 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AggAvgDistinct extends AggregatorBase
 {
-    private static Logger log = LoggerFactory.getLogger("AVG DISTINCT") ;
-
     // ---- AVG(DISTINCT expr)
     public AggAvgDistinct(Expr expr) { super("AVG", true, expr) ; } 
     @Override
@@ -70,7 +66,9 @@ public class AggAvgDistinct extends AggregatorBase
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = noValuesToAvg ;
         private int count = 0 ;
-
+        
+        static final boolean DEBUG = false ;
+        
         public AccAvgDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
@@ -86,7 +84,8 @@ public class AggAvgDistinct extends AggregatorBase
             }
             else
                 throw new ExprEvalException("avg: not a number: "+nv) ;
-            log.debug("avg count {}", count);
+
+            if ( DEBUG ) System.out.println("avg: ("+total+","+count+")") ;
         }
 
         @Override

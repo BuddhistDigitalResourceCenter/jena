@@ -397,12 +397,11 @@ class Journal implements Sync, Closeable
         sync();
     }
 
-    public long position() { return channel.position(); }
-
-//    public void position(long posn) { channel.position(posn); }
 //    public void append()    { position(size()); }
 
-    public Location getLocation() { return location; }
+     public long position() { return channel.position(); }
+
+//    public void position(long posn) { channel.position(posn); }
 
     public String getFilename() { return channel.getFilename(); }
 }

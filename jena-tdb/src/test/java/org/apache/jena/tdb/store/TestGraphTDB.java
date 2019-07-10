@@ -18,12 +18,13 @@
 
 package org.apache.jena.tdb.store;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb.ConfigTest ;
+import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.junit.GraphLocation ;
-import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class TestGraphTDB extends AbstractTestGraphAddDelete
     
     @BeforeClass public static void beforeClass()
     {
-        TDBInternal.reset() ;
+        StoreConnection.reset() ;
         graphLocation = new GraphLocation(Location.create(ConfigTest.getCleanDir())) ;
         graphLocation.release() ;
         graphLocation.clearDirectory() ;
@@ -48,7 +49,6 @@ public class TestGraphTDB extends AbstractTestGraphAddDelete
     @AfterClass public static void afterClass()
     { 
         graphLocation.release() ;
-        TDBInternal.reset() ;
         graphLocation.clearDirectory() ;
         ConfigTest.deleteTestingDirDB() ;
     }
@@ -56,8 +56,15 @@ public class TestGraphTDB extends AbstractTestGraphAddDelete
     static Graph graph = null ;
     @Before public void before()
     { 
-        if ( graph != null )
+        try {
             graph.clear() ;
+        } catch (Exception ex)
+        {
+            Log.warn(this, "before() : "+ex.getMessage(), ex) ;
+            // Problem - reset.
+            beforeClass() ;
+        }
+        
     }
             
     @After public void after()   

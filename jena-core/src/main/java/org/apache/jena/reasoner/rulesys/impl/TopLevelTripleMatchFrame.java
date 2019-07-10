@@ -18,8 +18,9 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.* ;
 import org.apache.jena.reasoner.TriplePattern ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /* */
 public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
@@ -28,11 +29,11 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
     protected Triple lastMatch;
     
     /** An iterator over triples matching a goal */
-    SafeTripleIterator matchIterator;
+    ExtendedIterator<Triple> matchIterator;
 
     /** Used for debug/tracing only */
     protected TriplePattern goal;
-
+        
     /**
      * Constructor.
      * Initialize the triple match to preserve the current context of the given
@@ -41,7 +42,7 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
      */
     public TopLevelTripleMatchFrame(LPInterpreter interpreter, TriplePattern goal) {
         init(interpreter);
-        this.matchIterator = new SafeTripleIterator(interpreter, goal);
+        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
         this.goal = goal;
     }
 

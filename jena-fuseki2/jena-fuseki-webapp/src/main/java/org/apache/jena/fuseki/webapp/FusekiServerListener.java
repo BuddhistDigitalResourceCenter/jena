@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.webapp;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
@@ -29,6 +28,7 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.servlets.OperationRegistry;
+import org.apache.jena.tdb.StoreConnection;
 
 /** Setup configuration.
  * The order is controlled by {@code web.xml}:
@@ -58,8 +58,11 @@ public class FusekiServerListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        org.apache.jena.tdb.sys.TDBInternal.reset();
-        org.apache.jena.tdb2.sys.TDBInternal.reset();
+//        DataAccessPointRegistry.get().forEach((key, dap) -> {
+//            ??
+//        });
+        // But in flight-transactions?
+        StoreConnection.reset();
     }
 
     private synchronized void serverInitialization(ServletContext servletContext) {

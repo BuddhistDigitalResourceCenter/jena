@@ -33,14 +33,14 @@ public class TransactionHandlerView extends TransactionHandlerBase
     protected DatasetGraph getDSG() { return dsg; }    
 
     @Override
-    public void begin() {
-        getDSG().begin(TxnType.READ_PROMOTE);
-    }
-
-    @Override
     public void abort() {
         getDSG().abort();
         getDSG().end();
+    }
+
+    @Override
+    public void begin() {
+        getDSG().begin(TxnType.READ_PROMOTE);
     }
 
     @Override

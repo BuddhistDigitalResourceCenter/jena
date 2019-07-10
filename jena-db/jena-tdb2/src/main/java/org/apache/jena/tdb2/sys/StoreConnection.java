@@ -81,16 +81,18 @@ public class StoreConnection
         StoreConnection sConn = cache.get(location);
         if ( sConn == null ) {
             ProcessFileLock lock = null;
-            // This is not duplicating DatabaseConnection.build.
-            // This is a tdb.lock file in the storage database, not the switchable. 
             if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
                 lock = lockForLocation(location);
-                // Take the lock.  This is atomic and non-reentrant.
+                // Take the lock.  This is atomic.
                 lock.lockEx();
             }
+
             // Recovery happens when TransactionCoordinator.start is called
-            // during the building of the DatasetGraphTDB
+            // during the building of the DatasetGraphTxn.
+
+            //DatasetGraphTDB dsg = (DatasetGraphTDB)TDBBuilder.build(location, params);
             DatasetGraphTDB dsg = TDB2StorageBuilder.build(location, params);
+
             sConn = new StoreConnection(dsg, lock);
             if (!location.isMemUnique())
                 cache.put(location, sConn);

@@ -41,6 +41,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.vocabulary.XSD ;
 
 public final class Token
 {
@@ -516,10 +517,6 @@ public final class Token
         return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
     }
 
-    private static final String dtXSDintger = XSDDatatype.XSDinteger.getURI();
-    private static final String dtXSDdecimal = XSDDatatype.XSDdecimal.getURI();
-    private static final String dtXSDdouble = XSDDatatype.XSDdouble.getURI();
-    
     public static Token tokenForNode(Node node, String base, PrefixMap mapping) {
         if ( node.isURI() ) {
             String uri = node.getURI() ;
@@ -561,7 +558,7 @@ public final class Token
 
             // Special form we know how to handle?
             // Assume valid text
-            if ( datatype.equals(dtXSDintger) ) {
+            if ( datatype.equals(XSD.integer.getURI()) ) {
                 try {
                     String s1 = s ;
                     // BigInteger does not allow leading +
@@ -577,7 +574,7 @@ public final class Token
                 // Continuing is always safe.
             }
 
-            if ( datatype.equals(dtXSDdecimal) ) {
+            if ( datatype.equals(XSD.decimal.getURI()) ) {
                 if ( s.indexOf('.') > 0 ) {
                     try {
                         // BigDecimal does allow a leading +
@@ -589,7 +586,7 @@ public final class Token
                 }
             }
 
-            if ( datatype.equals(dtXSDdouble) ) {
+            if ( datatype.equals(XSD.xdouble.getURI()) ) {
                 // Assumes SPARQL has decimals and doubles.
                 // Must have 'e' or 'E' to be a double short form.
 

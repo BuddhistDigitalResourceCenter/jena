@@ -42,7 +42,7 @@ public class TestThreadingTransactions {
     }
 
     @After public void after() {
-        transInt.getTxnMgr().shutdown(true);
+        transInt.getTxnMgr().shutdown();
     }
 
     // Read synchronously in a transaction.

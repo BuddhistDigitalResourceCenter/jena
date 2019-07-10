@@ -18,6 +18,9 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import org.apache.jena.graph.* ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+
 /**
  * Frame on the choice point stack used to represent the state of a direct
  * graph triple match.
@@ -29,7 +32,7 @@ package org.apache.jena.reasoner.rulesys.impl;
 public class TripleMatchFrame extends GenericTripleMatchFrame {
     
     /** An iterator over triples matching a goal */
-    protected SafeTripleIterator matchIterator;
+    ExtendedIterator<Triple> matchIterator;
     
     /**
      * Constructor.
@@ -62,7 +65,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      */
     @Override public void init(LPInterpreter interpreter) {
         super.init(interpreter);
-        this.matchIterator = new SafeTripleIterator(interpreter, goal);
+        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
     }
     
     /**

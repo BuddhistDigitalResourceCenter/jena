@@ -26,9 +26,8 @@ import org.junit.runners.Suite ;
     TestCounter.class
     , TestThreadAction.class
     , TestTxnLifecycle.class
-    , TestTxnOp.class
     , TestTxn.class
     , TestTxnThread.class
 })
-
+    
 public class TS_System {}

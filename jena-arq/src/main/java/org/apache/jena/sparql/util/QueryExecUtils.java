@@ -68,7 +68,7 @@ public class QueryExecUtils {
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
         Query query = queryExecution.getQuery() ;
-        if ( prologue == null && query != null )
+        if ( prologue == null )
             prologue = query.getPrologue() ;
         if ( prologue == null )
             prologue = dftPrologue ;

@@ -202,11 +202,10 @@ public class query extends CmdARQ
         try {
             Query query = modQuery.getQuery() ;
             if ( isVerbose() ) {
-                IndentedWriter out = new IndentedWriter(System.err, true);
+                IndentedWriter out = new IndentedWriter(System.out, true);
                 query.serialize(out);
-                out.setLineNumbers(false);
-                out.println();
                 out.flush();
+                System.out.println();
             }
             
             if ( isQuiet() )

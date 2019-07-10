@@ -22,7 +22,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
 
-public class TestGraphsTDBinsideTxn extends AbstractTestGraphsTDB
+public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 {
     @Before public void before() 
     {

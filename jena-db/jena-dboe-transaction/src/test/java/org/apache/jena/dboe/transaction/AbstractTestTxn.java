@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.transaction.TransInteger;
+import org.apache.jena.dboe.transaction.TransMonitor;
+import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.junit.After;
@@ -46,8 +49,7 @@ public abstract class AbstractTestTxn {
     }
 
     @After public void clearup() {
-        // Some test that expect exceptions leave active transactions around.
-        txnMgr.shutdown(true);
+        txnMgr.shutdown();
     }
 
     protected void checkClear() {
@@ -58,3 +60,4 @@ public abstract class AbstractTestTxn {
 
     }
 }
+

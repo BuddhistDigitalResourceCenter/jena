@@ -35,7 +35,6 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd;
-import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -58,7 +57,6 @@ public class TestLoader extends BaseTest {
     static public void afterClass() {
         LogCtl.enable(ARQ.logExecName) ;
         LogCtl.enable(TDB.logLoaderName) ;
-        TDBInternal.reset();
     }
 
     static DatasetGraphTDB fresh() {

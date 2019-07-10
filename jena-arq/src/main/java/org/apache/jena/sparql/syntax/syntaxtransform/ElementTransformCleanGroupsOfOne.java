@@ -22,13 +22,9 @@ import java.util.List ;
 
 import org.apache.jena.sparql.syntax.* ;
 
-/** 
- * Clean a SPARQL and ARQ syntax. This applies after using OpAsQuery.
- * <ul>
- * <li>Unwrap groups of one where they do not matter.
- * <li>Merge adjacent ElementPathBlock</li>
- * </ul>
- * Groups of one do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
+/** Unwrap groups of one where they do not matter.
+ * <p>
+ *  They do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
  */
 public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
     // Improvements: scan group elements to work out for non-reduceable adjacents.
