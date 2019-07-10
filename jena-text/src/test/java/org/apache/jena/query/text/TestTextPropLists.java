@@ -175,8 +175,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    ?s text:query 'bar' .",
                 "}"
                 );
-        System.err.println("\n\ntestForSanity01 TURTLE: \n" + turtle);
-        System.err.println("testForSanity01 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -197,8 +195,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    ?s text:query ( rdfs:label 'bar' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestForSanity02 TURTLE: \n" + turtle);
-        System.err.println("testForSanity02 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -219,8 +215,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    ?s text:query ( skos:prefLabel 'bar' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestForSanity03 TURTLE: \n" + turtle);
-        System.err.println("testForSanity03 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -241,8 +235,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestSingleTextProp01 TURTLE: \n" + turtle);
-        System.err.println("testSingleTextProp01 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -263,8 +255,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    (?ss ?sc ?lit ?g ?s) text:query ( skos:altLabel 'surely' 10 'highlight:' ) .",
                 "}"
                 );
-        System.err.println("\n\ntestSingleTextProp02 TURTLE: \n" + turtle);
-        System.err.println("testSingleTextProp02 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -284,8 +274,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestListTextProp01 TURTLE: \n" + turtle);
-        System.err.println("testListTextProp01 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -311,8 +299,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 ) .",
                 "}"
                 );
-        System.err.println("\n\ntestListTextProp02 TURTLE: \n" + turtle);
-        System.err.println("testListTextProp02 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel", SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
@@ -338,8 +324,6 @@ public class TestTextPropLists extends AbstractTestDatasetWithTextIndexBase {
                 "    (?ss ?sc ?lit ?g ?s) text:query ( spec:labels 'foo' 10 'highlight:' ) .",
                 "}"
                 );
-        System.err.println("\n\ntestListTextProp03 TURTLE: \n" + turtle);
-        System.err.println("testListTextProp03 QUERY: \n" + qyString);
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel", SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);

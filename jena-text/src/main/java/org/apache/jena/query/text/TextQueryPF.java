@@ -92,12 +92,23 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList() ;
+            int sz = list.size();
 
-            if (list.size() == 0)
+            if (sz == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
 
-            if (list.size() > 5 && ! list.get(0).equals(pProps))
+            int numProps = 0 ;
+            while (numProps < sz && list.get(numProps).isURI()) {
+                numProps++ ;
+            }
+
+            if (sz-numProps < 1) {
+                throw new QueryBuildException("No query string just properties in list : " + list) ;
+            }
+
+            if (sz-numProps > 4) {
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
+            }
         }
     }
 
