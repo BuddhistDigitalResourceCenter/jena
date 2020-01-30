@@ -297,17 +297,36 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         explainQuery(qs, limit, execCxt, graphURI);
 
+        ListMultimap<String,TextHit> hitsMap = null;
+        
         if (textIndex.getDocDef().areQueriesCached()) {
             // Cache-key does not matter if lang or graphURI are null
             String cacheKey = subj + " " + limit + " " + match.getProps() + " " + qs + " " + lang + " " + graphURI ;
             Cache<String, ListMultimap<String, TextHit>> queryCache = prepareCache(execCxt);
 
-            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", qs, cacheKey, queryCache) ;
+            log.debug("Caching Text query: {} with key: >>{}<< in cache: {}", qs, cacheKey, queryCache) ;
+            
+            long startTime = System.nanoTime();
+            hitsMap = queryCache.getOrFill(cacheKey, ()->performQuery(subj, match, qs, graphURI, lang, limit, highlight));
+            long endTime = System.nanoTime();
+            long deltaTime = endTime - startTime;
+            log.debug("query @@@@@@@@>> queryCache.getOrFill TOOK {} nsec and FOUND {} results", deltaTime, hitsMap.size());
+            
+            return hitsMap;
 
-            return queryCache.getOrFill(cacheKey, ()->performQuery(subj, match, qs, graphURI, lang, limit, highlight));
+//            return queryCache.getOrFill(cacheKey, ()->performQuery(subj, match, qs, graphURI, lang, limit, highlight));
         } else {
-            log.trace("Executing w/o cache Text query: {}", qs) ;
-            return performQuery(subj, match, qs, graphURI, lang, limit, highlight);
+            log.debug("Executing w/o cache Text query: {}", qs) ;
+            
+            long startTime = System.nanoTime();
+            hitsMap = performQuery(subj, match, qs, graphURI, lang, limit, highlight);
+            long endTime = System.nanoTime();
+            long deltaTime = endTime - startTime;
+            log.debug("query @@@@@@@@>> performQuery TOOK {} nsec and FOUND {} results", deltaTime, hitsMap.size());
+            
+            return hitsMap;
+
+//            return performQuery(subj, match, qs, graphURI, lang, limit, highlight);
         }
     }
 

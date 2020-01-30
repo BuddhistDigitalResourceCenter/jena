@@ -69,6 +69,7 @@ import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
 import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -789,9 +790,13 @@ public class TextIndexLucene implements TextIndex {
 
         log.debug("query$ with LIST: {}; INPUT qString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", props, qString, queryParserType, qa, textQuery, query, limit) ;
 
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader);        
 
-        ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
+        long startTime = System.nanoTime();
+        ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs;
+        long endTime = System.nanoTime();
+        long deltaTime = endTime - startTime;
+        log.debug("query$ #########>> TopDocs.scoreDocs TOOK {} nsec to PRODUCE {} results", deltaTime, sDocs.length);
         
         // if there were no explicit textFields supplied then Lucene used
         // the default field if defined otherwise Lucene simply interpreted the qs
@@ -802,10 +807,23 @@ public class TextIndexLucene implements TextIndex {
             textFields.add(docDef.getPrimaryField());
         }
         
+        List<TextHit> hits = null;
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
+            startTime = System.nanoTime();
+            hits = highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
+            endTime = System.nanoTime();
+            deltaTime = endTime - startTime;
+            log.debug("query$ #########>> highlightResults TOOK {} nsec to PRODUCE {} results", deltaTime, sDocs.length);
+            return hits;
+//            return highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
         } else {
-            return simpleResults(sDocs, indexSearcher, query, textFields);
+            startTime = System.nanoTime();
+            hits = simpleResults(sDocs, indexSearcher, query, textFields);
+            endTime = System.nanoTime();
+            deltaTime = endTime - startTime;
+            log.debug("query$ #########>> simpleResults TOOK {} nsec to PRODUCE {} results", deltaTime, sDocs.length);
+            return hits;
+//            return simpleResults(sDocs, indexSearcher, query, textFields);
         }
     }
 
